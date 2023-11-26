@@ -1,4 +1,9 @@
-package org.cron;
+package org.cron.parsing;
+
+import org.cron.models.CronPart;
+import org.cron.models.CronPartName;
+import org.cron.models.CronSchedule;
+import org.cron.models.CronScheduleBuilder;
 
 public class CronParser {
     private static final int EXPECTED_EXPRESSION_PART_COUNT = 6;

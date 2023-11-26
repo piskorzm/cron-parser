@@ -1,4 +1,4 @@
-package org.cron;
+package org.cron.models;
 
 public class CronScheduleBuilder {
     private ReoccurringCronPart minutes;

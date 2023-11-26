@@ -1,4 +1,6 @@
-package org.cron;
+package org.cron.parsing;
+
+import org.cron.models.ReoccurringCronPart;
 
 import java.util.ArrayList;
 import java.util.Arrays;

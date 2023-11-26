@@ -1,4 +1,4 @@
-package org.cron;
+package org.cron.models;
 
 import java.util.List;
 import java.util.Objects;
