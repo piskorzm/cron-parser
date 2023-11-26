@@ -1,0 +1,6 @@
+minute         1
+hour           2
+day of month   3
+month          4
+day of week    5
+command        test-command
