@@ -6,6 +6,7 @@ public enum CronPartName {
     DAY_OF_MONTH("day of month"),
     MONTH("month"),
     DAY_OF_WEEK("day of week"),
+    YEAR("year"),
     COMMAND("command");
 
     private final String text;

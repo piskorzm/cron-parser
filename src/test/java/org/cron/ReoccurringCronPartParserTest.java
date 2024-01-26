@@ -37,17 +37,6 @@ class ReoccurringCronPartParserTest {
     }
 
     @Test
-    void parse_startIndexGreaterThanEnd_CronParseExceptionThrown() {
-        // given
-
-        // when
-        var exception = assertThrows(CronParseException.class, () -> testParser.parse("3-2"));
-
-        // then
-        assertEquals("Start of range cannot be greater than end it's end for 'test part'", exception.getMessage());
-    }
-
-    @Test
     void parse_intervalGreaterThanWholeRange_CronParseExceptionThrown() {
         // given
 

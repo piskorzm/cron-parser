@@ -6,6 +6,7 @@ public class CronScheduleBuilder {
     private ReoccurringCronPart daysOfMonth;
     private ReoccurringCronPart months;
     private ReoccurringCronPart daysOfWeek;
+    private ReoccurringCronPart year;
     private CronPart command;
 
     public CronScheduleBuilder withMinutes(ReoccurringCronPart minutes) {
@@ -33,12 +34,17 @@ public class CronScheduleBuilder {
         return this;
     }
 
+    public CronScheduleBuilder withYear(ReoccurringCronPart year) {
+        this.year = year;
+        return this;
+    }
+
     public CronScheduleBuilder withCommand(CronPart command) {
         this.command = command;
         return this;
     }
 
     public CronSchedule build() {
-        return new CronSchedule(minutes, hours, daysOfMonth, months, daysOfWeek, command);
+        return new CronSchedule(minutes, hours, daysOfMonth, months, daysOfWeek, year, command);
     }
 }

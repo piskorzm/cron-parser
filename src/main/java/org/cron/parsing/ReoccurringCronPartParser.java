@@ -1,5 +1,6 @@
 package org.cron.parsing;
 
+import org.cron.models.CronParserOptions;
 import org.cron.models.ReoccurringCronPart;
 
 import java.util.ArrayList;
@@ -18,10 +19,21 @@ public class ReoccurringCronPartParser {
     private final Integer endIndex;
     private final String partName;
 
+    private CronParserOptions options;
+
     public ReoccurringCronPartParser(Integer startIndex, Integer endIndex, String partName) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.partName = partName;
+        this.options = new CronParserOptions();
+    }
+
+    public ReoccurringCronPartParser(Integer startIndex, Integer endIndex, String partName,
+                                     CronParserOptions options) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.partName = partName;
+        this.options = options;
     }
 
     public ReoccurringCronPart parse(String expression) throws CronParseException {
@@ -29,26 +41,49 @@ public class ReoccurringCronPartParser {
         var occurrences = new ArrayList<Integer>();
 
         if (allOccurrencesPatter.matcher(expression).matches()) {
+            if (!options.isUseAllOccurrencesPattern()) {
+                throw new CronParseException(
+                        String.format("'*' and '?' expression is invalid for '%s'", partName));
+            }
             occurrences.addAll(getAllOccurrences());
         } else if (singleNumberPattern.matcher(expression).matches()) {
+            if (!options.isUseSingleNumberPattern()) {
+                throw new CronParseException(
+                        String.format("Single number expression is invalid for '%s'", partName));
+            }
             occurrences.add(Integer.parseInt(expression));
         } else if (listPattern.matcher(expression).matches()) {
+            if (!options.isUseListPattern()) {
+                throw new CronParseException(
+                        String.format("List expression is invalid for '%s'", partName));
+            }
             occurrences.addAll(Arrays.stream(expression.split(","))
                     .map(Integer::parseInt)
                     .sorted()
                     .toList());
         } else if (rangePattern.matcher(expression).matches()) {
+            if (!options.isUseRangePattern()) {
+                throw new CronParseException(
+                        String.format("Range expression is invalid for '%s'", partName));
+            }
             var expressionParts = expression.split("-");
             var start = Integer.parseInt(expressionParts[0]);
             var end = Integer.parseInt(expressionParts[1]);
 
-            if (start > end) {
-                throw new CronParseException(
-                        String.format("Start of range cannot be greater than end it's end for '%s'", partName));
+
+
+            if (start <= end) {
+                occurrences.addAll(getOccurrencesBetween(start, end));
+            } else {
+                occurrences.addAll(getOccurrencesBetween(start, endIndex));
+                occurrences.addAll(getOccurrencesBetween(startIndex, end));
             }
 
-            occurrences.addAll(getOccurrencesBetween(start, end));
         } else if (intervalPattern.matcher(expression).matches()) {
+            if (!options.isUseIntervalPattern()) {
+                throw new CronParseException(
+                        String.format("Interval expression is invalid for '%s'", partName));
+            }
             var expressionParts = expression.split("/");
             var start = expressionParts[0].equals("*") ? startIndex : Integer.parseInt(expressionParts[0]);
             var interval = Integer.parseInt(expressionParts[1]);
@@ -100,5 +135,9 @@ public class ReoccurringCronPartParser {
                         String.format("'%s' accepts only values between %s and %s", partName, startIndex, endIndex));
             }
         }
+    }
+
+    public void setOptions(CronParserOptions options) {
+        this.options = options;
     }
 }
